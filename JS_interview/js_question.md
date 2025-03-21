@@ -281,3 +281,153 @@ console.log('同步任务2');
 顺序：“同步任务 1”、“同步任务 2”，接着执行微任务 “微任务 - Promise”；最后执行宏任务 “宏任务 - setTimeout”。
 
 ## promise和 async/await的区别
+
+## arrow function
+普通函数：需要使用function关键字定义，即使是简单函数，也需要完整的函数声明结构，如function add(a, b) { return a + b; } 。
+1. 当只有一个参数时参数括号可以省略
+```jsx
+const square = x => x * x; 
+```
+2. 当函数体只有一条语句时，花括号和return关键字可以省略。例如，const add = (a, b) => a + b; 。
+
+## this
+全局作用域：在全局作用域中，this 指向全局对象。在浏览器环境下，全局对象是 window。
+
+函数调用：当函数作为普通函数调用时，this 在非严格模式下指向全局对象，严格模式下是 undefined。
+
+方法调用：若函数作为对象的方法调用，this 指向调用该方法的对象。
+```js
+const person = {
+    name: 'John',
+    sayHello: function() {
+        console.log(`Hello, my name is ${this.name}`);
+    }
+};
+
+person.sayHello();
+```
+构造函数调用：使用 new 调用函数时，this 指向新创建的对象。
+
+箭头函数：箭头函数没有自己的 this，它继承自外层作用域的 this 值。
+
+call、apply、bind：使用这三个方法可以显式地指定 this 的指向。
+
+## 导出表单数据到Excel
+具体而言，在实现将用户联系数据自动填充到 Google Sheets 表格的过程中，当用户在网站填写联系方式表单时，我编写的 JavaScript 代码会通过 DOM 操作，精准定位到表单中的各个输入字段。代码会实时监听表单的提交事件，一旦用户点击提交按钮，便立即触发数据收集流程。
+收集到的数据会被整理成一个 JavaScript 对象，方便后续处理。接着，为了能在 HTTP 请求中正确传输这些数据，我采用了application/x-www-form-urlencoded编码格式。这种格式会将数据对象中的每个键值对，通过encodeURIComponent函数对键和值分别进行编码，以确保特殊字符能被正确识别，之后将编码后的键值对用&符号连接成字符串。
+完成编码后，通过XMLHttpRequest对象发起 POST 请求，请求的目标地址就是部署在 Google Apps Script 上的 API 端点。在请求头中，我明确设置了Content-Type为application/x-www-form-urlencoded，以此告知服务器数据的格式。Google Apps Script 端接收到请求后，我编写的doPost函数会解析请求中的数据，并将其追加到预先创建好的 Google Sheets 表格的新行中。
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客户联系方式表单</title>
+</head>
+
+<body>
+    <form id="contactForm">
+        <label for="name">姓名:</label>
+        <input type="text" id="name" name="name" required><br>
+        <label for="email">邮箱:</label>
+        <input type="email" id="email" name="email" required><br>
+        <label for="phone">电话:</label>
+        <input type="tel" id="phone" name="phone" required><br>
+        <input type="submit" value="提交">
+    </form>
+    <script src="script.js"></script>
+</body>
+
+</html>    
+```
+```js
+document.getElementById('contactForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = document.getElementById('name').value;
+    var email = document.getElementById('email').value;
+    var phone = document.getElementById('phone').value;
+
+    var apiUrl = 'YOUR_API_URL'; // 替换为你部署的 Apps Script URL
+
+    var formData = {
+        name: name,
+        email: email,
+        phone: phone
+    };
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', apiUrl, true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            alert('数据提交成功');
+            document.getElementById('contactForm').reset();
+        }
+    };
+    var params = Object.keys(formData).map(function (key) {
+        return encodeURIComponent(key) + '=' + encodeURIComponent(formData[key]);
+    }).join('&');
+    xhr.send(params);
+});    
+```
+## 提高网页响应速度
+1. 压缩图片/懒加载
+```html
+<img src="image.jpg" alt="example" loading="lazy">
+```
+2. 事件委托：将事件监听器绑定到父元素上，利用事件冒泡的原理，处理子元素的事件。这样可以减少事件监听器的数量，提高性能。
+```js
+<ul id="list">
+    <li>Item 1</li>
+    <li>Item 2</li>
+    <li>Item 3</li>
+</ul>
+<script>
+    const list = document.getElementById('list');
+    list.addEventListener('click', function (event) {
+        if (event.target.tagName === 'LI') {
+            console.log('Clicked on item:', event.target.textContent);
+        }
+    });
+</script>
+```
+3. 避免使用复杂CSS选择器：如后代选择器嵌套过深，会增加浏览器解析选择器的时间。尽量使用 ID、类名等简单选择器。
+4. 合并文件：将多个 CSS 或 JavaScript 文件合并成一个，减少 HTTP 请求数量。
+
+## GraphQL
+GraphQL 是一种用于 API 的查询语言，客户端可以通过发送包含所需数据结构的查询到单一端点，精确获取所需数据，避免了过度获取或获取不足的问题，提高了数据传输效率。
+
+例如客户端可一次性请求获取用户及其相关文章等关联数据。与 RESTful 相比，GraphQL 在数据获取的灵活性上更具优势，RESTful 通常通过不同的端点来获取不同资源，可能导致多次请求和数据冗余或不足；GraphQL 的单一端点设计使得请求更加简洁高效，且客户端能完全控制返回的数据结构；而 RESTful 则在缓存机制等方面较为成熟，且更易于理解和实现，在一些简单场景中使用广泛。
+
+```graphql
+query {
+    user(id: "1") {
+        name
+        email
+        articles {
+            title
+            content
+        }
+    }
+}
+```
+这是服务器定义的 schema
+```graphql
+type Article {
+    id: ID
+    title: String
+    content: String
+}
+
+type User {
+    id: ID
+    name: String
+    email: String
+    articles: [Article]
+}
+
+type Query {
+    user(id: ID!): User
+}
+```

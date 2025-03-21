@@ -5,6 +5,28 @@ JSX 是 JavaScript 的语法扩展，允许在 JavaScript 代码里像写 HTML �
 ```jsx
 const element = <h1>Hello, { 'World' }</h1>;
 ```
+## 入口文件
+index.js
+```js
+// 引入 React 库
+import React from 'react';
+// 引入 ReactDOM 库，用于将 React 组件渲染到 DOM 中
+import ReactDOM from 'react-dom/client';
+// 引入全局样式文件
+import './index.css';
+// 引入包含应用逻辑的 App 组件
+import App from './App';
+
+// 创建一个根 DOM 节点，用于挂载 React 应用
+const root = ReactDOM.createRoot(document.getElementById('root'));
+// 将 App 组件渲染到根节点上
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+    
+```
 ## class vs functional component
 ### class
 使用 this.state 来管理组件内部的状态，并且通过 this.setState 方法来更新状态，状态的更新会触发组件的重新渲染。
@@ -377,3 +399,59 @@ const AuthenticatedUserDisplay = withAuth(UserDisplay);
 5. React 会进入提交阶段，将计算出的更改真正提交到真实 DOM 中。
 ## React Portals
 在 React 中，portal 是一种将组件的子元素渲染到父组件层级之外的 DOM 的不同部分的方式，同时还能保持 React 的组件结构。
+
+## React Element vs React Node
+1. React 元素是一个普通的 JavaScript 对象, 例如 
+```jsx
+const element = <h1>Hello, React!</h1>;
+```
+2. React 节点是 React 中可以出现在 return 语句中的各种类型的值的统称。
+```jsx
+文本节点： 如图中的 const textNode = 'This is a text node.';，文本字符串就是一种 React 节点。
+
+数字节点： 例如 const numberNode = 42; ，数字也可以作为 React 节点。
+
+元素节点： 像 const elementNode = <p>This is a React element node.</p>; 这样的 React 元素也是 React 节点。
+
+使用场景：在 React 组件的 return 语句中，可以返回一个或多个 React 节点。例如图中的 MyComponent 函数组件，在 return 中返回了一个 <div> 元素，其中包含了文本节点、数字节点和元素节点。
+```
+
+## Router
+当用户在应用程序中导航到不同的路由时，React - Router 能够在不刷新整个页面的情况下，根据当前的路由渲染相应的组件。
+```js
+import React from 'react';
+import { Routes, Route, Link } from 'react-router-dom';
+import Home from './Home';
+import About from './About';
+import Contact from './Contact';
+
+const App = () => {
+  return (
+    <div>
+      <nav>
+        <ul>
+          <li><Link to="/">Home</Link></li>
+          <li><Link to="/about">About</Link></li>
+          <li><Link to="/contact">Contact</Link></li>
+        </ul>
+      </nav>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+      </Routes>
+    </div>
+  );
+};
+
+export default App;
+    
+```
+## Axios
+```js
+axios.get('https://example.com/api/data')
+  .then(response => console.log(response.data))
+  .catch(error => console.error(error));
+```
+1. 自动数据转换：它会自动将服务器响应的数据转换为 JSON 格式
+2. Axios 基于 Promise 实现，这使得它在处理异步操作时非常方便。可以使用 then 方法来处理成功的响应，使用 catch 方法来捕获错误
