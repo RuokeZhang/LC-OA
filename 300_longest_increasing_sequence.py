@@ -3,6 +3,7 @@
 输出：4
 解释：最长递增子序列是 [2,3,7,101]，因此长度为 4 。
 '''
+from bisect import bisect_left
 from cmath import inf
 from functools import cache
 import sys
@@ -34,4 +35,17 @@ def soldp(nums):
             if nums[j]<nums[i]:
                 dp[i]=max(dp[i],dp[j]+1)
     return max(dp)
-print(soldp(nums))
+
+nums = [10,9,2,5,3,7,101,18]
+
+def solGreedy(nums):
+    g=[]
+    for i,x in enumerate(nums):
+        j=bisect_left(g, x)
+        if j==len(g):
+            g.append(x)
+        else:
+            g[j]=x
+    return len(g)
+
+print(solGreedy(nums))

@@ -10,3 +10,6 @@ for i, x in enumerate(height):
             res+=(min(height[leftIndex], x)-bottom)*(i-leftIndex-1)
     stack.append(i)
 print(res)
+
+        
+print(trap(height))
